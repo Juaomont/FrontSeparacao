@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/Bemol.png";
-import getProductSAP from "../services/getProductSAP";
+import imagemSKU from "../assets/lavitan.png"
+import imagem2 from "../assets/imagem2.webp"
+// import getProductSAP from "../services/getProductSAP";
 
 const OrdemVenda = () => {
   const [centro, setCentro] = useState("");
@@ -14,7 +16,7 @@ const OrdemVenda = () => {
 
   const [imageURL, setImageURL] = useState(""); // Estado para armazenar a URL da imagem
   
-  
+
   
 
   const handleBuscarOrdens = () => {
@@ -32,16 +34,17 @@ const OrdemVenda = () => {
               skuBemol: "4004205",
               ean: "7897947606500",
               posicao: "PR.01.02", // Posição no depósito
-              imagem: "imagem"
+              imagem: imagemSKU
             },
             {
               id: 2,
               descricao: "Dorflex 300+35+50mg 10 Comprimidos",
               quantidade: 5,
               unidade: "un",
+              skuBemol: "4000862",
               ean: "7890987654321",
               posicao: "PR.08.05", // Posição no depósito
-              imagem: "imagem"
+              imagem: imagem2
               
             },
           ],
@@ -53,27 +56,24 @@ const OrdemVenda = () => {
     }
   };
 
-  const materialAtual = materiais[indiceAtual];
 
-  useEffect(() => {
-    const fetchImage = async () => {
-      const vtexService = new getProductSAP();
-      try {
-        const reference = await vtexService.getProductSAPReference(materialAtual.skuBemol);
-        const image = await vtexService.getProductVTex(reference);
-        if (image) {
-          setImageURL(image);
-        } else {
-          console.error("Nenhuma imagem encontrada para este SKU.");
-        }
-      } catch (error) {
-        console.error("Erro ao buscar a imagem do produto:", error);
-      }
-    };
+
+  // useEffect(() => {
+  //   const fetchImage = async () => {
+  //     const vtexService = new getProductSAP();
+  //     try {
+  //       const reference = await vtexService.getProductSAPReference(materialAtual.skuBemol);
+  //       const image = await vtexService.getProductVTex(reference);
+       
+  //         setImageURL(image);
+        
+  //     } catch (error) {
+  //       console.error("Erro ao buscar a imagem do produto:", error);
+  //     }
+  //   };
     
-      fetchImage();
     
-  }, [materialAtual]);
+  // }, [materialAtual]);
 
   const handleSelecionarOrdem = (ordem) => {
     setOrdemSelecionada(ordem);
@@ -286,7 +286,7 @@ const OrdemVenda = () => {
   }
 
   
-
+  const materialAtual = materiais[indiceAtual];
   return (
     <div style={styles.container}>
       <h2>Detalhe da Ordem OV12345 </h2>
@@ -299,11 +299,10 @@ const OrdemVenda = () => {
           <strong>Quantidade:</strong> {materialAtual.quantidade}{" "}
           {materialAtual.unidade}
         </p>
-        {imageURL ? (
-          <img src={imageURL} alt="Produto" style={{ maxWidth: "200px" }} />
-        ) : (
-          <p>Carregando imagem...</p>
-        )}
+        <div  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: "30px"}}>
+          <img src={materialAtual.imagem} alt="imagemsku" width="150px"/> 
+          </div>
+        
         
         <div style={styles.formGroup}>
           <input

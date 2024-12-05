@@ -5,7 +5,7 @@ async function main() {
 
   try {
     // Busca o ID do produto no SAP
-    const productIdSap = await vtexService.getProductSAPReference('4004205');
+    const productIdSap = await vtexService.getProductSAPReference('4000862');
     console.log('ID do SAP:', productIdSap);
 
     if (!productIdSap) {

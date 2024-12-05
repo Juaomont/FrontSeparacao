@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import logo from "../assets/Bemol.png";
 
+import imagem from "../assets/lavitan.png"
+import imagem2 from "../assets/imagem2.webp"
+const imagem1 = imagem;
+const imagem22 = imagem2;
+
 const NotaFiscal = () => {
   const [notaFiscal, setNotaFiscal] = useState("");
   const [materiais, setMateriais] = useState([]);
@@ -20,7 +25,7 @@ const NotaFiscal = () => {
           skuBemol: "4004205",
           ean: "7897947606500",
           posicao: "PR.01.02", // Posição no depósito
-          imagem: "imagem"
+          imagem: imagem1
         },
         {
           id: 2,
@@ -30,7 +35,7 @@ const NotaFiscal = () => {
           skuBemol: "4004205",
           ean: "7890987654321",
           posicao: "PR.08.05", // Posição no depósito
-          imagem: "imagem"
+          imagem: imagem22
           
         },
       ]);
@@ -183,9 +188,14 @@ const NotaFiscal = () => {
               <div key={material.id} style={styles.materialCard}>
                 <p><strong>Descrição:</strong> {material.descricao}</p>
                 <p><strong>EAN:</strong> {material.ean}</p>
+                <p><strong>SKU:</strong> {material.skuBemol}</p>
                 <p><strong>Posição no Depósito:</strong> {material.posicao}</p>
                 <p><strong>Quantidade Total:</strong> {material.quantidade} {material.unidade}</p>
                 <p><strong>Faltando:</strong> {faltando > 0 ? faltando : "Completo"}</p>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: "30px"}}>
+                 <img src={material.imagem} alt="imagem" width="150px"/>
+                </div>
+                
               </div>
             );
           })}
