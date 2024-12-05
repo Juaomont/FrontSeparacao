@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import logo from "../assets/Bemol.png";
-
-import imagem from "../assets/lavitan.png"
-import imagem2 from "../assets/imagem2.webp"
-const imagem1 = imagem;
-const imagem22 = imagem2;
+import imagem from "../assets/lavitan.png";
+import imagem2 from "../assets/imagem2.webp";
 
 const NotaFiscal = () => {
   const [notaFiscal, setNotaFiscal] = useState("");
   const [materiais, setMateriais] = useState([]);
   const [quantidadesSeparadas, setQuantidadesSeparadas] = useState({});
+  const [indiceAtual, setIndiceAtual] = useState(0);
   const [eanInput, setEanInput] = useState("");
   const [quantidadeInput, setQuantidadeInput] = useState("");
   const [mensagemErro, setMensagemErro] = useState("");
@@ -24,8 +22,8 @@ const NotaFiscal = () => {
           unidade: "Un",
           skuBemol: "4004205",
           ean: "7897947606500",
-          posicao: "PR.01.02", // Posição no depósito
-          imagem: imagem1
+          posicao: "PR.01.02",
+          imagem: imagem,
         },
         {
           id: 2,
@@ -34,9 +32,8 @@ const NotaFiscal = () => {
           unidade: "Un",
           skuBemol: "4004205",
           ean: "7890987654321",
-          posicao: "PR.08.05", // Posição no depósito
-          imagem: imagem22
-          
+          posicao: "PR.08.05",
+          imagem: imagem2,
         },
       ]);
       setQuantidadesSeparadas({});
@@ -49,27 +46,51 @@ const NotaFiscal = () => {
   };
 
   const handleValidarEAN = () => {
-    const materialEncontrado = materiais.find((material) => material.ean === eanInput);
+    const materialAtual = materiais[indiceAtual];
 
-    if (materialEncontrado) {
-      const quantidadeSeparada = Number(quantidadeInput);
+    if (materialAtual && eanInput === materialAtual.ean) {
+      const quantidadeSeparada =
+        quantidadesSeparadas[materialAtual.id] || 0;
+
       if (
-        quantidadeSeparada > 0 &&
-        (quantidadesSeparadas[materialEncontrado.id] || 0) + quantidadeSeparada <=
-          materialEncontrado.quantidade
+        quantidadeSeparada + Number(quantidadeInput) <= materialAtual.quantidade
       ) {
         setMensagemErro("");
         setQuantidadesSeparadas((prev) => ({
           ...prev,
-          [materialEncontrado.id]: (prev[materialEncontrado.id] || 0) + quantidadeSeparada,
+          [materialAtual.id]: quantidadeSeparada + Number(quantidadeInput),
         }));
         setEanInput("");
         setQuantidadeInput("");
+
+        if (indiceAtual < materiais.length - 1) {
+          setIndiceAtual(indiceAtual + 1);
+        } else {
+          alert("Todos os itens foram separados!");
+        }
       } else {
         setMensagemErro("Quantidade inválida ou excedente.");
       }
     } else {
       setMensagemErro("EAN inválido. Tente novamente.");
+    }
+  };
+
+  const handleProximoProduto = () => {
+    if (indiceAtual < materiais.length - 1) {
+      setIndiceAtual(indiceAtual + 1);
+      setMensagemErro("");
+      setEanInput("");
+      setQuantidadeInput("");
+    }
+  };
+
+  const handleVoltarProduto = () => {
+    if (indiceAtual > 0) {
+      setIndiceAtual(indiceAtual - 1);
+      setMensagemErro("");
+      setEanInput("");
+      setQuantidadeInput("");
     }
   };
 
@@ -86,6 +107,7 @@ const NotaFiscal = () => {
       alert("Separação finalizada com sucesso!");
       setMateriais([]);
       setQuantidadesSeparadas({});
+      setIndiceAtual(0);
     } else {
       alert("Ainda há produtos pendentes.");
     }
@@ -104,12 +126,6 @@ const NotaFiscal = () => {
     logo: {
       width: "220px",
       marginBottom: "20px",
-    },
-    header: {
-      fontSize: "24px",
-      fontWeight: "bold",
-      color: "",
-      marginBottom: "50px",
     },
     inputGroup: {
       display: "flex",
@@ -133,24 +149,16 @@ const NotaFiscal = () => {
       border: "none",
       cursor: "pointer",
     },
-    buttonDisabled: {
-      backgroundColor: "#ccc",
-      color: "#666",
-      cursor: "not-allowed",
-    },
     materialCard: {
-      padding: "10px",
+      padding: "15px",
+      marginBottom: "20px",
       border: "1px solid #ddd",
-      borderRadius: "5px",
-      marginBottom: "15px",
+      borderRadius: "8px",
       backgroundColor: "#fff",
       boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-      width: "80%",
+      width: "100%",
       maxWidth: "600px",
-    },
-    errorMessage: {
-      color: "red",
-      marginTop: "10px",
+      textAlign: "left",
     },
     centralButtonGroup: {
       display: "flex",
@@ -160,11 +168,13 @@ const NotaFiscal = () => {
     },
   };
 
-  return (
-    <div style={styles.container}>
-      <img src={logo} alt="Bemol Farma Logo" style={styles.logo} />
-      <h2 style={styles.header}>Nota Fiscal </h2>
-      {materiais.length === 0 && (
+  const materialAtual = materiais[indiceAtual];
+
+  if (!materialAtual) {
+    return (
+      <div style={styles.container}>
+        <img src={logo} alt="Bemol Farma Logo" style={styles.logo} />
+        <h2>Nota Fiscal</h2>
         <div style={styles.inputGroup}>
           <input
             type="text"
@@ -177,62 +187,75 @@ const NotaFiscal = () => {
             Buscar Nota
           </button>
         </div>
-      )}
-      {materiais.length > 0 && (
-        <>
-          {materiais.map((material) => {
-            const quantidadeSeparada = quantidadesSeparadas[material.id] || 0;
-            const faltando = material.quantidade - quantidadeSeparada;
+      </div>
+    );
+  }
 
-            return (
-              <div key={material.id} style={styles.materialCard}>
-                <p><strong>Descrição:</strong> {material.descricao}</p>
-                <p><strong>EAN:</strong> {material.ean}</p>
-                <p><strong>SKU:</strong> {material.skuBemol}</p>
-                <p><strong>Posição no Depósito:</strong> {material.posicao}</p>
-                <p><strong>Quantidade Total:</strong> {material.quantidade} {material.unidade}</p>
-                <p><strong>Faltando:</strong> {faltando > 0 ? faltando : "Completo"}</p>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: "30px"}}>
-                 <img src={material.imagem} alt="imagem" width="150px"/>
-                </div>
-                
-              </div>
-            );
-          })}
-          <div style={styles.inputGroup}>
-            <input
-              type="text"
-              placeholder="EAN"
-              value={eanInput}
-              onChange={(e) => setEanInput(e.target.value)}
-              style={styles.input}
-            />
-            <input
-              type="number"
-              placeholder="Quantidade"
-              value={quantidadeInput}
-              onChange={(e) => setQuantidadeInput(e.target.value)}
-              style={styles.input}
-            />
-          </div>
-          <button onClick={handleValidarEAN} style={styles.button}>
-            Validar Produto
-          </button>
-          {mensagemErro && <p style={styles.errorMessage}>{mensagemErro}</p>}
-          <div style={styles.centralButtonGroup}>
-            <button
-              style={{
-                ...styles.button,
-                ...(podeFinalizarSeparacao() ? {} : styles.buttonDisabled),
-              }}
-              onClick={handleFinalizarSeparacao}
-              disabled={!podeFinalizarSeparacao()}
-            >
-              Finalizar Separação
-            </button>
-          </div>
-        </>
-      )}
+  return (
+    <div style={styles.container}>
+      <h2>Detalhe do Produto</h2>
+      <div style={styles.materialCard}>
+        <p><strong>Descrição:</strong> {materialAtual.descricao}</p>
+        <p><strong>EAN:</strong> {materialAtual.ean}</p>
+        <p><strong>SKU:</strong> {materialAtual.skuBemol}</p>
+        <p><strong>Posição no Depósito:</strong> {materialAtual.posicao}</p>
+        <p>
+          <strong>Quantidade Total:</strong> {materialAtual.quantidade}{" "}
+          {materialAtual.unidade}
+        </p>
+        <div style={{ textAlign: "center", padding: "15px" }}>
+          <img src={materialAtual.imagem} alt="Imagem Produto" width="150px" />
+        </div>
+        <div style={styles.inputGroup}>
+          <input
+            type="text"
+            placeholder="EAN"
+            value={eanInput}
+            onChange={(e) => setEanInput(e.target.value)}
+            style={styles.input}
+          />
+          <input
+            type="number"
+            placeholder="Qtd"
+            value={quantidadeInput}
+            onChange={(e) => setQuantidadeInput(e.target.value)}
+            style={styles.input}
+          />
+        </div>
+        <button onClick={handleValidarEAN} style={styles.button}>
+          Validar Produto
+        </button>
+        {mensagemErro && <p style={{ color: "red" }}>{mensagemErro}</p>}
+      </div>
+      <div style={styles.centralButtonGroup}>
+        <button
+          onClick={handleVoltarProduto}
+          style={styles.button}
+          disabled={indiceAtual === 0}
+        >
+          {"<"}
+        </button>
+        <button
+          onClick={handleProximoProduto}
+          style={styles.button}
+          disabled={indiceAtual === materiais.length - 1}
+        >
+          {">"}
+        </button>
+      </div>
+      <div style={styles.centralButtonGroup}>
+        <button
+          onClick={handleFinalizarSeparacao}
+          style={{
+            ...styles.button,
+            backgroundColor: podeFinalizarSeparacao() ? "#007BFF" : "#ccc",
+            cursor: podeFinalizarSeparacao() ? "pointer" : "not-allowed",
+          }}
+          disabled={!podeFinalizarSeparacao()}
+        >
+          Finalizar Separação
+        </button>
+      </div>
     </div>
   );
 };

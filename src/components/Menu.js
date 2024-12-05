@@ -20,8 +20,8 @@ const Menu = () => {
       marginBottom: "20px",
     },
     button: {
-      padding: "15px 20px", // Ajuste no tamanho do botão
-      fontSize: "18px", // Aumentei a fonte para melhorar a aparência
+      padding: "10px 10px", // Ajuste no tamanho do botão
+      fontSize: "18px", // fonte para melhorar a aparência
       fontWeight: "bold",
       backgroundColor: "#007BFF",
       color: "#fff",
@@ -29,7 +29,7 @@ const Menu = () => {
       borderRadius: "8px",
       cursor: "pointer",
       marginBottom: "15px",
-      width: "50%", // Mantive o botão responsivo
+      width: "20%", // botão responsivo
       textAlign: "center",
     },
     buttonHover: {
