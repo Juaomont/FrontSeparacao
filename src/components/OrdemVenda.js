@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/Bemol.png";
-import imagemSKU from "../assets/lavitan.png"
-import imagem2 from "../assets/imagem2.webp"
-// import getProductSAP from "../services/getProductSAP";
+import imagemSKU from "../assets/lavitan.png";
+import imagem2 from "../assets/imagem2.webp";
 
 const OrdemVenda = () => {
   const [centro, setCentro] = useState("");
@@ -13,11 +12,6 @@ const OrdemVenda = () => {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [eanInput, setEanInput] = useState("");
   const [mensagemErro, setMensagemErro] = useState("");
-
-  const [imageURL, setImageURL] = useState(""); // Estado para armazenar a URL da imagem
-  
-
-  
 
   const handleBuscarOrdens = () => {
     if (centro >= 600 && centro <= 699) {
@@ -33,8 +27,8 @@ const OrdemVenda = () => {
               unidade: "un",
               skuBemol: "4004205",
               ean: "7897947606500",
-              posicao: "PR.01.02", // Posição no depósito
-              imagem: imagemSKU
+              posicao: "PR.01.02",
+              imagem: imagemSKU,
             },
             {
               id: 2,
@@ -43,9 +37,8 @@ const OrdemVenda = () => {
               unidade: "un",
               skuBemol: "4000862",
               ean: "7890987654321",
-              posicao: "PR.08.05", // Posição no depósito
-              imagem: imagem2
-              
+              posicao: "PR.08.05",
+              imagem: imagem2,
             },
           ],
           status: "Pendente",
@@ -55,25 +48,6 @@ const OrdemVenda = () => {
       alert("Nenhuma ordem encontrada para o centro especificado.");
     }
   };
-
-
-
-  // useEffect(() => {
-  //   const fetchImage = async () => {
-  //     const vtexService = new getProductSAP();
-  //     try {
-  //       const reference = await vtexService.getProductSAPReference(materialAtual.skuBemol);
-  //       const image = await vtexService.getProductVTex(reference);
-       
-  //         setImageURL(image);
-        
-  //     } catch (error) {
-  //       console.error("Erro ao buscar a imagem do produto:", error);
-  //     }
-  //   };
-    
-    
-  // }, [materialAtual]);
 
   const handleSelecionarOrdem = (ordem) => {
     setOrdemSelecionada(ordem);
@@ -182,22 +156,22 @@ const OrdemVenda = () => {
       borderRadius: "5px",
       border: "1px solid #ccc",
       fontSize: "14px",
-      width: "100px", // Reduzido
+      width: "100px",
       outline: "none",
-      textAlign: "center", // Centraliza o texto
+      textAlign: "center",
     },
     centralButtonGroupNavigation: {
       display: "flex",
-      justifyContent: "center", // Centraliza horizontalmente
-      gap: "10px", // Ajuste de espaçamento entre os botões
+      justifyContent: "center",
+      gap: "10px",
       marginTop: "10px",
-      width: "100%", // Garante alinhamento correto
+      width: "100%",
     },
     container: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      justifyContent: "center", // Centraliza verticalmente
+      justifyContent: "center",
       padding: "20px",
       fontFamily: "'Roboto', sans-serif",
       backgroundColor: "#f4f4f4",
@@ -222,13 +196,18 @@ const OrdemVenda = () => {
       outline: "none",
     },
     button: {
-      padding: "10px 20px", // Ajuste de tamanho
+      padding: "10px 20px",
       borderRadius: "5px",
       backgroundColor: "#007BFF",
       color: "#fff",
       fontSize: "16px",
       border: "none",
       cursor: "pointer",
+    },
+    buttonDisabled: {
+      backgroundColor: "#ccc",
+      color: "#666",
+      cursor: "not-allowed",
     },
     materialCard: {
       padding: "15px",
@@ -244,13 +223,12 @@ const OrdemVenda = () => {
     centralButtonGroup: {
       display: "flex",
       justifyContent: "center",
-      alignItems: "center", // Centraliza verticalmente
+      alignItems: "center",
       gap: "15px",
       marginTop: "15px",
-      width: "100%", // Garante alinhamento
+      width: "100%",
     },
   };
-  
 
   if (!ordemSelecionada) {
     return (
@@ -271,8 +249,12 @@ const OrdemVenda = () => {
         </div>
         {ordens.map((ordem) => (
           <div key={ordem.id} style={styles.materialCard}>
-            <p><strong>Ordem:</strong> {ordem.id}</p>
-            <p><strong>Status:</strong> {ordem.status}</p>
+            <p>
+              <strong>Ordem:</strong> {ordem.id}
+            </p>
+            <p>
+              <strong>Status:</strong> {ordem.status}
+            </p>
             <button
               style={styles.button}
               onClick={() => handleSelecionarOrdem(ordem)}
@@ -285,25 +267,39 @@ const OrdemVenda = () => {
     );
   }
 
-  
   const materialAtual = materiais[indiceAtual];
   return (
     <div style={styles.container}>
-      <h2>Detalhe da Ordem OV12345 </h2>
+      <h2>Detalhe da Ordem OV12345</h2>
       <div style={styles.materialCard}>
-        <p><strong>Descrição:</strong> {materialAtual.descricao}</p>
-        <p><strong>SKU: </strong> {materialAtual.skuBemol}</p>
-        <p><strong>EAN:</strong> {materialAtual.ean}</p>
-        <p><strong>Posição no Depósito:</strong> {materialAtual.posicao}</p>
+        <p>
+          <strong>Descrição:</strong> {materialAtual.descricao}
+        </p>
+        <p>
+          <strong>SKU: </strong> {materialAtual.skuBemol}
+        </p>
+        <p>
+          <strong>EAN:</strong> {materialAtual.ean}
+        </p>
+        <p>
+          <strong>Posição no Depósito:</strong> {materialAtual.posicao}
+        </p>
         <p>
           <strong>Quantidade:</strong> {materialAtual.quantidade}{" "}
           {materialAtual.unidade}
         </p>
-        <div  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: "30px"}}>
-          <img src={materialAtual.imagem} alt="imagemsku" width="150px"/> 
-          </div>
-        
-        
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+            padding: "30px",
+          }}
+        >
+          <img src={materialAtual.imagem} alt="imagemsku" width="150px" />
+        </div>
+
         <div style={styles.formGroup}>
           <input
             type="text"
@@ -313,13 +309,14 @@ const OrdemVenda = () => {
             style={styles.input}
           />
           <input
-  type="number"
-  placeholder="Qtd"
-  value={quantidadesSeparadas[materialAtual.id] || ""}
-  onChange={(e) => handleSepararQuantidade(materialAtual.id, Number(e.target.value))}
-  style={styles.inputQtd} // Novo estilo aqui
-/>
-
+            type="number"
+            placeholder="Qtd"
+            value={quantidadesSeparadas[materialAtual.id] || ""}
+            onChange={(e) =>
+              handleSepararQuantidade(materialAtual.id, Number(e.target.value))
+            }
+            style={styles.inputQtd}
+          />
         </div>
         <button style={styles.button} onClick={handleValidarEAN}>
           Validar Produto
@@ -344,7 +341,10 @@ const OrdemVenda = () => {
       </div>
       <div style={styles.centralButtonGroup}>
         <button
-          style={styles.button}
+          style={{
+            ...styles.button,
+            ...(podeFaturar() ? {} : styles.buttonDisabled),
+          }}
           onClick={handleFaturarOrdem}
           disabled={!podeFaturar()}
         >
@@ -362,4 +362,3 @@ const OrdemVenda = () => {
 };
 
 export default OrdemVenda;
- 
